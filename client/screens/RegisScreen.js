@@ -3,33 +3,90 @@ import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import RoleSelector from "../components/RoleSelector";
 import { Picker } from "@react-native-picker/picker";
-
-// Dummy API function
-const registerUser = async ({ id, name, password, role }) => {
-  // Handle actual API call here
-};
+import { BackendURL } from "../constant";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RegisterScreen({ navigation }) {
   const [role, setRole] = useState("student");
   const [form, setForm] = useState({
     name: "",
     rollno: "",
-    branch: "EE",
-    batch: "21",
+    branch: "ECE",
+    batch: "22",
     password: "",
-    teacherId: "",
+    id: "",
   });
 
   const handleRegister = async () => {
     try {
-      const payload = {
-        ...form,
-        id: form.rollno || form.teacherId,
-        role,
-      };
-      await registerUser(payload);
-      Alert.alert("Registered successfully");
-      navigation.navigate("Login");
+      if (role === "student") {
+        if (!form.name || !form.rollno || !form.password) {
+          Alert.alert("Please fill all fields");
+          return;
+        }
+        const data = {
+          name: form.name,
+          rollno: form.rollno?.toLowerCase().trim(),
+          branch: form.branch,
+          batch: form.batch,
+          password: form.password.trim(),
+        };
+        const response = await axios.post(`${BackendURL}/user/register`, data);
+
+        if (response.data.success) {
+          await AsyncStorage.setItem(
+            "rollno",
+            form.rollno?.toLowerCase().trim()
+          );
+          await AsyncStorage.setItem("role", "student");
+          await AsyncStorage.setItem("name", form.name?.trim());
+          await AsyncStorage.setItem("branch", form.branch);
+          await AsyncStorage.setItem("batch", form.batch);
+
+          Alert.alert("Registered successfully");
+
+          setTimeout(() => {
+            navigation.navigate("FaceCapture");
+          }, 1000);
+        } else {
+          Alert.alert(
+            "Registration failed",
+            response.data.message || "Try again"
+          );
+        }
+      } else {
+        if (!form.name || !form.id || !form.password) {
+          Alert.alert("Please fill all fields");
+          return;
+        }
+        const data = {
+          name: form.name,
+          id: form.id.toLowerCase().trim(),
+          pass_: form.password.trim(),
+        };
+        const response = await axios.post(
+          `${BackendURL}/teacher/register`,
+          data
+        );
+
+        if (response.data.success) {
+          await AsyncStorage.setItem("id", form.id?.toLowerCase());
+          await AsyncStorage.setItem("role", "teacher");
+          await AsyncStorage.setItem("name", form.name);
+
+          Alert.alert("Registered successfully");
+
+          setTimeout(() => {
+            navigation.navigate("AllClasses");
+          }, 1000);
+        } else {
+          Alert.alert(
+            "Registration failed",
+            response.data.message || "Try again"
+          );
+        }
+      }
     } catch (err) {
       Alert.alert("Registration failed", err.message || "Try again");
     }
@@ -69,6 +126,7 @@ export default function RegisterScreen({ navigation }) {
             <Picker.Item label="ME" value="ME" />
             <Picker.Item label="CSE" value="CSE" />
             <Picker.Item label="CE" value="CE" />
+            <Picker.Item label="META" value="META" />
           </Picker>
 
           <Text style={styles.label}>Batch</Text>
@@ -81,13 +139,14 @@ export default function RegisterScreen({ navigation }) {
             <Picker.Item label="22" value="22" />
             <Picker.Item label="23" value="23" />
             <Picker.Item label="24" value="24" />
+            <Picker.Item label="25" value="25" />
           </Picker>
         </>
       ) : (
         <TextInput
           label="Teacher ID"
-          value={form.teacherId}
-          onChangeText={(val) => setForm({ ...form, teacherId: val })}
+          value={form.id}
+          onChangeText={(val) => setForm({ ...form, id: val })}
           style={styles.input}
         />
       )}

@@ -1,0 +1,20 @@
+# pip install fastapi uvicorn numpy scipy pickle5
+# pip install tensorflow
+# pip install ultralytics --quiet
+# pip install insightface opencv-python numpy onnxruntime
+# pip install python-dotenv
+# pip install pymongo pydantic
+
+fastapi
+uvicorn
+numpy
+scipy
+pickle5
+tensorflow
+ultralytics
+insightface
+opencv-python
+onnxruntime
+
+# pip install -r requirements.txt
+
