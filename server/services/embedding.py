@@ -10,7 +10,7 @@ import pickle
 
 
 # Load YOLO model (custom trained on faces or pretrained face model)
-yolo_model = YOLO("/home/ayush/DSP_Project/best_yolo_model.pt")  # Custom trained model here
+yolo_model = YOLO("server\best_yolo_model.pt")  # Custom trained model here
 
 # Initialize InsightFace (ArcFace) model
 app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
