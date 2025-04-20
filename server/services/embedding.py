@@ -10,7 +10,7 @@ import pickle
 
 
 # Load YOLO model (custom trained on faces or pretrained face model)
-yolo_model = YOLO("../best_yolo_model.pt")  # Custom trained model here
+yolo_model = YOLO("best_yolo_model.pt")  # Custom trained model here
 
 # Initialize InsightFace (ArcFace) model
 app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
@@ -72,7 +72,7 @@ def extract_embedding(img, temp, printimage=False):
 def identify_person(group_embeddings, threshold=0.5):
     
     # Load reference embeddings
-    with open("../reference_embeddings.pkl", "rb") as f:
+    with open("reference_embeddings.pkl", "rb") as f:
         reference_embeddings = pickle.load(f)
 
     # Convert reference embeddings (M×512) to a NumPy array of shape (M, 512)
