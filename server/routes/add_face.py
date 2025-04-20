@@ -35,7 +35,7 @@ async def save_face_embedding(
 
         # 2. Create directory and save image
         person_key = f"{rollno}-{name.replace(' ', '_')}"
-        save_dir = os.path.join("server\faces", person_key)
+        save_dir = os.path.join("../faces", person_key)
         os.makedirs(save_dir, exist_ok=True)
 
         image_path = os.path.join(save_dir, file.filename)
@@ -52,7 +52,7 @@ async def save_face_embedding(
         new_embedding = embeddings[0]  # Shape: (512,)
 
         # 4. Load existing embeddings
-        embeddings_path = "server\reference_embeddings.pkl"
+        embeddings_path = "../reference_embeddings.pkl"
         if os.path.exists(embeddings_path):
             with open(embeddings_path, "rb") as f:
                 reference_embeddings = pickle.load(f)
